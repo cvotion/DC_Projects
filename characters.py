@@ -63,11 +63,15 @@ class NPC(Charater):
             pass    
     def get_bounty(self, hero):
         total_bounty = 0
+        count = 1
         for enemy in hero.enemies_killed:
             total_bounty += enemy.reward
-        hero.gold += total_bounty            
-        # todo add this code to the store in the main file and create a print
-        # todo statement with the player's new gold balance and something from winston
+            print(f"{count}. {type(enemy).__name__} : bounty -> {enemy.reward}")
+            count += 1
+        hero.gold += total_bounty  
+        print(f"{total_bounty} gold has been added to your balance.")
+        print(f"You now have {hero.gold} gold.")          
+    
 class Hero(Charater):
     
     hero_items = []
@@ -75,21 +79,28 @@ class Hero(Charater):
     # todo figure out how to do this as a dictionary maybe??
         
     def attack(self, enemy):
-        if type(enemy).__name__ == 'Shadow' and enemy.hit_counter < 9:
-            enemy.hit_counter += 1
+        if type(enemy).__name__ == 'Shadow' and enemy.gets_hit() == False:
             print("You strike the Shadow but nothing happens!")
-            if enemy.hit_counter == 5:
-                enemy.attack(self)
+            
         elif type(enemy).__name__ == 'Zombie':
-            print("You attack the Zombie but nothing happens")        
-        else:    
+            print("You attack the Zombie but it keeps coming toward you!") 
+            enemy.attack(self)       
+        else:  
+            self.double_damage()  
             enemy.health -= self.power
             enemy.attack(self)
-            enemy.hit_counter = 0
             print(f"You do {self.power} damage to the {type(enemy).__name__}.")
+            self.power = 5
             if enemy.alive() == False:
                 self.enemies_killed.append(enemy)
                 print(f"The {type(enemy).__name__} is dead!")
+                
+    def double_damage(self):
+        prob = random.randint(1, 10)
+        if prob <= 2:
+            self.power+= 2
+            print("You made a critical hit!")
+           
                
 class Enemy(Charater):
     def __init__(self, health, power, gold, reward):
@@ -97,26 +108,36 @@ class Enemy(Charater):
         self.reward = reward
         
     def attack(self, hero):
-        hero.health -= self.power
-        print(f"The {type(self).__name__} does {self.power} damage to you.") 
+        if type(Armor).__name__ in hero.hero_items:
+                hero.health -= (self.power - type(Armor).__name__.item_bonus)
+        else:        
+            hero.health -= self.power
+            print(f"The {type(self).__name__} does {self.power} damage to you.") 
     
     def add_enemy_to_list(self, name):
-        enemy_list.append(name)     
+        enemy_list.append(name)  
+        
+    def random_enemy():
+        enemy = random.choice(enemy_list) 
+        return enemy      
     
 class Goblin(Enemy):
     pass        
-
+#todo os.system('clear')
 class Medic(Enemy):
     
     def attack(self, hero):
         super().attack(hero)
         prob = random.randint(1, 10)
-        if prob >= 2:
+        if prob <= 2:
             self.health += 2
             print("The Medic has healed themselves!")
 
 class Shadow(Enemy):
-    pass
+    def gets_hit(self):
+        prob = random.randint(1, 10)
+        if prob == 1:
+            return True
 
 class Zombie(Enemy):
     pass
@@ -132,3 +153,6 @@ winston.phrase.append("Howdy! Take a look around my shop.")
 winston.phrase.append("Welcome traveler, see anything you like?")
 winston.phrase.append("I have plenty of magic items but don't ask me where I got them! ........ or else.")
 winston.phrase.append("You wont find these items on Amazon! Suck it Bezos!")
+
+
+

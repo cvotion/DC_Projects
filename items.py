@@ -3,7 +3,8 @@
 #! Items
 
 from characters import *
-
+#todo add armor as atribute to hero
+#todo armor will have hp
 
 class Store:
     def __init__(self, owner):
@@ -19,12 +20,17 @@ class Store:
             count+=1
 
 class Item(Store):
-    def __init__(self, owner, cost):
+    def __init__(self, owner, cost, perks):
         super(Item, self).__init__(owner)
         self.cost = cost   
-            
+        self.perks = perks    
+
 class Armor(Item):
-    pass
+    def __init__(self, owner, cost, perks, hp, item_bonus):
+        super().__init__(owner, cost, perks)
+        self.hp = hp
+        self.item_bonus = item_bonus
+        
 
 class Evade(Item):
     pass
@@ -34,9 +40,9 @@ class SuperTonic(Item):
 
 winstons_store = Store("Winston")
 
-armor = Armor("Winston", 25)
+armor = Armor("Winston", 25, "Defense +2", 15, 2)
 winstons_store.store.append(armor)
-evade = Evade("Winston", 50)
+evade = Evade("Winston", 50, "perk")
 winstons_store.store.append(evade)
-supertonic = SuperTonic("Winston", 100)
+supertonic = SuperTonic("Winston", 100, "perk")
 winstons_store.store.append(supertonic)

@@ -21,7 +21,7 @@ from items import *
  
     
 def game():
-    hero = Hero(10, 5, 10) 
+    hero = Hero(10, 5, 30) 
     shadow = Shadow(1, 3, 3, 6)
     enemy_list.append(shadow)
     goblin = Goblin(6,2,1, 5)
@@ -31,24 +31,14 @@ def game():
     medic = Medic(6,2,1, 7)
     enemy_list.append(medic) 
     running = True
-    enemy = random.choice(enemy_list)
-
     
-    def print_enemies():
-        for enemy in enemy_list:
-            print(type(enemy).__name__)
-    print_enemies()        
-    def fight_menu():
-# todo add inventory option during combat        
-        print(f"""
-            \n
-            -----------------------
-            What do you want to do?
-            1. fight {type(enemy).__name__}
-            2. do nothing
-            3. flee
-            -----------------------
-            """)
+    
+    
+    # def print_enemies():
+    #     for enemy in enemy_list:
+    #         print(type(enemy).__name__)
+    # print_enemies()
+            
     def main_menu():
         print(f"""
             \n
@@ -101,6 +91,7 @@ def game():
                 if hero.gold >= item.cost:
                     hero.gold -= item.cost
                     hero.hero_items.append(item)
+                    item.owner = hero
                     print(f"{item.cost} has been deducted from your gold. You have {hero.gold} gold remaining.")
                     print(f"**{type(item).__name__} added to your items.**")
                 else:
@@ -115,7 +106,8 @@ def game():
                 print("That's not a valid input")
                 store()    
         elif raw_input == '3':
-            pass
+            winston.get_bounty(hero)
+            store()
         elif raw_input == '4':
             home()
         else:
@@ -127,7 +119,8 @@ def game():
             if raw_input == '1':
                 store()
             elif raw_input == '2':
-                pass
+                print("Resting for the night...")
+                hero.health = 10
             elif raw_input == '3':
                 print("Good luck!")
                 fight()
@@ -138,8 +131,28 @@ def game():
             else:
                 print("Sorry that's not a valid input!")
     def fight():
-        enemy = random.choice(enemy_list)        
+        enemy = Enemy.random_enemy()
+        def check_equipment():
+            if type(Armor).__name__ in hero.hero_items:
+                return True
+        
+        def fight_menu():
+    # todo add inventory option during combat 
+
+            print(f"""
+                \n
+                -----------------------
+                What do you want to do?
+                1. Attack {type(enemy).__name__}
+                2. Use Item
+                2. Switch Item
+                2. do nothing
+                3. flee
+                -----------------------
+                """)
+        
         while enemy.alive() and hero.alive():
+            os.system('clear')
             hero.print_status()
             enemy.print_status()
             fight_menu()
@@ -155,6 +168,7 @@ def game():
                 
             elif raw_input == "3":
                 print("Goodbye.")
+                enemy = random.choice(enemy_list)        
                 break
             else:
                 print(f"Invalid input {raw_input}")
