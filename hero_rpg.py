@@ -4,21 +4,20 @@
 # 2. do nothing - in which case the goblin will attack him anyway
 # 3. flee
 class Charater:
-    def __init__(self, health, power, name):
+    def __init__(self, health, power):
         self.health = health
         self.power = power
-        self.name = name
+        # self.__name__ = __name__
         
     def alive(self):
         if self.health > 0:
             return True
         else:
-            print(f"The {self.name} is dead.")
+            print(f"The {self.__name__} is dead.")
             return False
-            
-            
+                 
     def print_status(self):
-        print(f"The {self.name} has {self.health} health and {self.power} power.")
+        print(f"The {self.__name__} has {self.health} health and {self.power} power.")
         
 class Hero(Charater):
         

@@ -3,130 +3,164 @@
 # 1. fight goblin
 # 2. do nothing - in which case the goblin will attack him anyway
 # 3. flee
+from ast import Store
+from curses import raw
 from random import random
 
 
-enemy_list = []
+from characters import *
+from items import *
 
-#! Items
 
-class Item:
-    def __init__(self, name, cost):
-        self.name = name
-        self.cost = cost
-        self.store = []
+#todo maybe dead enemies can come back as zombies
+ 
+#todo make reset method in character classes 
+
+#todo call reset method while looping through list
+
+ 
     
-    def add_item(self, name):
-        name = Item(name)   
-        self.store.append(name)
-        
-class Armor(Item):
-    pass
-
-class Evade(Item):
-    pass
-
-class SuperTonic(Item):
-    pass
-
-#! Characters
-class Charater:
-    def __init__(self, health, power, name, gold, reward):
-        self.health = health
-        self.power = power
-        self.name = name
-        self.gold = gold
-        self.reward = reward
-        self.hit_counter = 0
-        
-        
-    def alive(self):
-        if self.health > 0:
-            return True
-        else:
-            print(f"The {self.name} is dead.")
-            return False
-                 
-    def print_status(self):
-        print(f"The {self.name} has {self.health} health and {self.power} power.")
-        
-    
-           
-        
-class Hero(Charater):
-        
-    def attack(self, enemy):
-        if enemy.name == 'Shadow' and enemy.hit_counter < 9:
-            enemy.hit_counter += 1
-            print("You strike the Shadow but nothing happens!")
-            if enemy.hit_counter == 5:
-                enemy.attack(self)
-        else:    
-            enemy.health -= self.power
-            enemy.hit_counter = 0
-            print(f"You do {self.power} damage to the {enemy.name}.")
-               
-    
-    
-class Goblin(Charater):
-    
-    def attack(self, hero):
-        hero.health -= self.power
-        print(f"The {self.name} does {self.power} damage to you.")        
-
-class Medic(Charater):
-    pass
-
-class Shadow(Charater):
-    def attack(self, hero):
-        hero.health -= self.power
-        print(f"The {self.name} does {self.power} damage to you.") 
-    
-
-class Zombie(Charater):
-    pass
-
-class Wizard(Charater):
-    pass
-
-class Demon(Charater):
-    pass 
-
-
-   
-    
-def main():
-    hero = Hero(10, 5, 'Hero', 10, 0)        
-    Shadow.create_enemy(1, 3, 'Shadow', 0, 6)
-    Goblin.create_enemy(6,2,'Goblin',1, 5)
+def game():
+    hero = Hero(10, 5, 10) 
+    shadow = Shadow(1, 3, 3, 6)
+    enemy_list.append(shadow)
+    goblin = Goblin(6,2,1, 5)
+    enemy_list.append(goblin)
+    zombie = Zombie(1,4,2,1000)
+    enemy_list.append(zombie)
+    medic = Medic(6,2,1, 7)
+    enemy_list.append(medic) 
+    running = True
     enemy = random.choice(enemy_list)
 
-    while enemy.alive() and hero.alive():
-        hero.print_status()
-        enemy.print_status()
-        print()
-        print("What do you want to do?")
-        print(f"1. fight {enemy.name}")
-        print("2. do nothing")
-        print("3. flee")
-        print("> ", end=' ')
+    
+    def print_enemies():
+        for enemy in enemy_list:
+            print(type(enemy).__name__)
+    print_enemies()        
+    def fight_menu():
+# todo add inventory option during combat        
+        print(f"""
+            \n
+            -----------------------
+            What do you want to do?
+            1. fight {type(enemy).__name__}
+            2. do nothing
+            3. flee
+            -----------------------
+            """)
+    def main_menu():
+        print(f"""
+            \n
+            -----------------------
+            What do you want to do?
+            1. Go to store
+            2. Heal
+            3. Look for enemy
+            4. Quit
+            -----------------------
+            """)
+    def store_menu():
+            print(f"""
+            \n
+            -----------------------
+            What do you want to do?
+            1. List items
+            2. Buy item
+            3. Collect bounty
+            4. Exit shop
+            -----------------------
+            """)            
+    def store():
+        winston.greet()
+        store_menu()
         raw_input = input()
-        if raw_input == "1":
-            # Hero attacks enemy
-            hero.attack(enemy)
-            
-        elif raw_input == "2":
-            if enemy.alive:
-            # enemy attacks hero
-                enemy.attack(hero)
-            
-        elif raw_input == "3":
-            print("Goodbye.")
-            break
+        if raw_input == '1':
+            winstons_store.print_items()
+            print(""" \n
+                  ### Winston ### 
+                  Here's my current inventory!
+                   """)
+            print(f"Your Gold : {hero.gold}")
+            store()
+        elif raw_input == '2':
+        # todo create item perks and impliment them into combat    
+            winstons_store.print_items()
+            print("""\n
+                  ### Winston ### 
+                  What caught your eye?
+                   """)
+            raw_input = (int(input()) - 1)
+            if raw_input in range(len(winstons_store.store)):
+                item = winstons_store.store[raw_input]
+                
+                print(f"""\n
+                  ### Winston ### 
+                  Ah, the {type(item).__name__}. That's a good one! That'll be {item.cost} gold.
+                   """)
+                if hero.gold >= item.cost:
+                    hero.gold -= item.cost
+                    hero.hero_items.append(item)
+                    print(f"{item.cost} has been deducted from your gold. You have {hero.gold} gold remaining.")
+                    print(f"**{type(item).__name__} added to your items.**")
+                else:
+                    print(f"""\n
+                  ### Winston ### 
+                  It doesn't look like you have enough gold to buy the {type(item).__name__}. 
+                  You need {item.cost - hero.gold} more gold for this item.
+                  Try killing some enemies and collecting bounties to earn some money!
+                   """)      
+                store()  
+            else:
+                print("That's not a valid input")
+                store()    
+        elif raw_input == '3':
+            pass
+        elif raw_input == '4':
+            home()
         else:
-            print(f"Invalid input {raw_input}")
-
+            print("Sorry that's not a valid input!")
+    def home():
+        while running:
+            main_menu()
+            raw_input = input()
+            if raw_input == '1':
+                store()
+            elif raw_input == '2':
+                pass
+            elif raw_input == '3':
+                print("Good luck!")
+                fight()
+            elif raw_input == '4':
+                print("Good bye.")
+                running == False
+                quit()
+            else:
+                print("Sorry that's not a valid input!")
+    def fight():
+        enemy = random.choice(enemy_list)        
+        while enemy.alive() and hero.alive():
+            hero.print_status()
+            enemy.print_status()
+            fight_menu()
+            raw_input = input()
+            if raw_input == "1":
+                # Hero attacks enemy
+                hero.attack(enemy)
+                
+            elif raw_input == "2":
+                if enemy.alive:
+                # enemy attacks hero
+                    enemy.attack(hero)
+                
+            elif raw_input == "3":
+                print("Goodbye.")
+                break
+            else:
+                print(f"Invalid input {raw_input}")
+    home()            
+        
         
 
-main()
+game()
 
