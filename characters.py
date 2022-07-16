@@ -13,6 +13,7 @@ class Charater:
         self.power = power
         self.gold = gold
         self.hit_counter = 0
+        self.heart_symbol = u'\u2764 '
         
         
     def alive(self):
@@ -20,6 +21,7 @@ class Charater:
                  
     def print_status(self):
         print(f"The {type(self).__name__} has {self.health} health and {self.power} power.")
+        
         
 class NPC(Charater):
 
@@ -78,7 +80,11 @@ class Hero(Charater):
         self.hero_items = []
         self.enemies_killed = []
         self.armor_level = 0
+        self.armor_hp = 0
         self.evade_level = 0
+        
+    def hero_hearts(self):
+        print(self.heart_symbol * self.health)    
         
     def attack(self, enemy):
         if type(enemy).__name__ == 'Shadow' and enemy.gets_hit() == False:
@@ -114,7 +120,18 @@ class Hero(Charater):
             if prob <= 2:
                 return True   
         else: 
-            return False       
+            return False 
+        
+    def broken_armor(self):
+        if self.armor_hp == 0:
+            self.armor_level = 0
+            return True 
+            
+    def print_status(self):
+        print(f"The {type(self).__name__} has {self.health} health and {self.power} power.")
+        self.hero_hearts        
+        
+               
 class Enemy(Charater):
     def __init__(self, health, power, gold, reward):
         super(Enemy, self).__init__(health, power, gold) 
@@ -123,7 +140,11 @@ class Enemy(Charater):
     def attack(self, hero):
         if not hero.evade():      
             hero.health -= (self.power - hero.armor_level)
-            print(f"The {type(self).__name__} does {self.power} damage to you.") 
+            print(f"The {type(self).__name__} does {self.power - hero.armor_level} damage to you.")
+            if not hero.broken_armor():
+                hero.armor_hp -= 1 
+            else:
+                print("The hero's armor has broken!")        
         else:
             print("The hero evades the enemy's attack!")    
     

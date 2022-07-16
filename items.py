@@ -34,7 +34,8 @@ class Armor(Item):
         self.hp = hp
         self.defense = defense
     def equip(self, hero):
-        hero.armor_level = self.defense    
+        hero.armor_level = self.defense 
+        hero.armor_hp = self.hp 
 
 class Evade(Item):
     def __init__(self, owner, cost, perks, evade):
@@ -43,13 +44,17 @@ class Evade(Item):
     def equip(self, hero):
         hero.evade_level += self.evade 
 class SuperTonic(Item):
-    pass
+    def equip(self, hero):
+        hero.health = 10
+        print("Hero's health has been fully restored!")
 
 winstons_store = Store("Winston")
 
-armor = Armor("Winston", 25, "Defense +2", 15, 2)
+armor = Armor("Winston", 15, "Defense +2", 1, 2)
 winstons_store.store.append(armor)
-evade = Evade("Winston", 0, "Evade +2 (chance of evading enemy attack increased by 2%)", 2)
+evade = Evade("Winston", 20, """Evade +2 
+              (chance of evading enemy attack increased by 2%)""", 2)
 winstons_store.store.append(evade)
-supertonic = SuperTonic("Winston", 100, "perk")
+supertonic = SuperTonic("Winston", 30, """Fully restores hero health.
+                        Can be used during battle.""")
 winstons_store.store.append(supertonic)
