@@ -93,7 +93,7 @@ def game():
                     hero.gold -= item.cost
                     hero.hero_items.append(item)
                     item.owner = hero
-                    item.equip(hero)
+                    # item.equip(hero)
                     print(f"{item.cost} has been deducted from your gold. You have {hero.gold} gold remaining.")
                     print(f"**{type(item).__name__} added to your items.**")
                 else:
@@ -144,9 +144,8 @@ def game():
                 What do you want to do?
                 1. Attack {type(enemy).__name__}
                 2. Use Item
-                2. Switch Item
-                2. do nothing
-                3. flee
+                3. do nothing
+                4. flee
                 -----------------------
                 """)
         
@@ -161,12 +160,24 @@ def game():
                 hero.attack(enemy)
                 
             elif raw_input == "2":
+                count = 1
+                for item in hero.hero_items:
+                    item = type(item).__name__ 
+                    print(f"""{count}. {item}""") 
+                    count += 1
+                print("Which item do you want to use?") 
+                item_choice = (int(input()) -1)
+                if item_choice in range(len(hero.hero_items)):
+                    item = hero.hero_items[item_choice]
+                    item.equip(hero)
+                     
+            elif raw_input == "3":
                 if enemy.alive:
                 # enemy attacks hero
                     enemy.attack(hero)
                     
                 
-            elif raw_input == "3":
+            elif raw_input == "4":
                 print("Goodbye.")
                 enemy = random.choice(enemy_list)        
                 break
