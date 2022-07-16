@@ -27,10 +27,12 @@ def game():
     enemy_list.append(shadow)
     goblin = Goblin(6,2,1, 5)
     enemy_list.append(goblin)
-    zombie = Zombie(1,4,2,1000)
+    zombie = Zombie(1,4,2,20)
     enemy_list.append(zombie)
-    medic = Medic(6,2,1, 7)
+    medic = Medic(7,3,1, 7)
     enemy_list.append(medic) 
+    wizard = Wizard(8, 6, 5, 10)
+    enemy_list.append(wizard) 
     running = True
     
     

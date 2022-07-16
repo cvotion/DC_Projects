@@ -105,7 +105,9 @@ class Hero(Charater):
             self.power = 5
             if enemy.alive() == False:
                 self.enemies_killed.append(enemy)
+                self.gold += enemy.gold
                 print(f"The {type(enemy).__name__} is dead!")
+                print(f"The {type(enemy).__name__} dropped {enemy.gold} gold!")
             else:    
                 enemy.attack(self)
                 
@@ -132,9 +134,10 @@ class Hero(Charater):
             self.armor_level = 0
             return True 
             
-    def print_status(self):
-        print(f"The {type(self).__name__} has {self.health} health and {self.power} power.")
-        self.hero_hearts        
+    # def print_status(self):
+    #     super(Hero).print_status
+    #     print(f"The {type(self).__name__} has {self.health} health and {self.power} power.")
+    #     self.hero_hearts        
         
                
 class Enemy(Charater):
@@ -143,13 +146,21 @@ class Enemy(Charater):
         self.reward = reward
         
     def attack(self, hero):
-        if not hero.evade():      
-            hero.health -= (self.power - hero.armor_level)
-            print(f"The {type(self).__name__} does {self.power - hero.armor_level} damage to you.")
-            if not hero.broken_armor():
-                hero.armor_hp -= 1 
-            else:
-                print("The hero's armor has broken!")        
+        if not hero.evade():  
+            if self == Wizard and self.curse():
+                hero.health -= (self.power - hero.armor_level * 2)
+                print(f"The wizard casts a curse and does {(self.power - hero.armor_level) * 2} damage to you!") 
+                if not hero.broken_armor():
+                    hero.armor_hp -= 1 
+                else:
+                    print("The hero has no armor.") 
+            else:       
+                hero.health -= (self.power - hero.armor_level)
+                print(f"The {type(self).__name__} does {self.power - hero.armor_level} damage to you.")
+                if not hero.broken_armor():
+                    hero.armor_hp -= 1 
+                else:
+                    print("The hero has no armor.")        
         else:
             print("The hero evades the enemy's attack!")    
     
@@ -182,7 +193,10 @@ class Zombie(Enemy):
     pass
 
 class Wizard(Enemy):
-    pass
+    def curse(self):
+        prob = random.randint(1, 10)
+        if prob == 1:
+            return True
 
 class Demon(Enemy):
     pass

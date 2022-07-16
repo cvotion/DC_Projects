@@ -62,6 +62,6 @@ winstons_store.store.append(evade)
 supertonic = SuperTonic("Winston", 30, """Fully restores hero health.
                     Can be used during battle.""")
 winstons_store.store.append(supertonic)
-zombie_kill = Zombie_killer("Winston", 0, """Magic rune equiped to your sword 
+zombie_kill = Zombie_killer("Winston", 200, """Magic rune equiped to your sword 
                         that will allow you to slay zombies.""")
 winstons_store.store.append(zombie_kill)
