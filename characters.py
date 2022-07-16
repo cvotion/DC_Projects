@@ -89,12 +89,13 @@ class Hero(Charater):
         else:  
             self.double_damage()  
             enemy.health -= self.power
-            enemy.attack(self)
             print(f"You do {self.power} damage to the {type(enemy).__name__}.")
             self.power = 5
             if enemy.alive() == False:
                 self.enemies_killed.append(enemy)
                 print(f"The {type(enemy).__name__} is dead!")
+            else:    
+                enemy.attack(self)
                 
     def double_damage(self):
         prob = random.randint(1, 10)
