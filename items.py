@@ -37,8 +37,11 @@ class Armor(Item):
         hero.armor_level = self.defense    
 
 class Evade(Item):
-    pass
-
+    def __init__(self, owner, cost, perks, evade):
+        super().__init__(owner, cost, perks)
+        self.evade = evade
+    def equip(self, hero):
+        hero.evade_level += self.evade 
 class SuperTonic(Item):
     pass
 
@@ -46,7 +49,7 @@ winstons_store = Store("Winston")
 
 armor = Armor("Winston", 25, "Defense +2", 15, 2)
 winstons_store.store.append(armor)
-evade = Evade("Winston", 50, "perk")
+evade = Evade("Winston", 0, "Evade +2 (chance of evading enemy attack increased by 2%)", 2)
 winstons_store.store.append(evade)
 supertonic = SuperTonic("Winston", 100, "perk")
 winstons_store.store.append(supertonic)

@@ -78,6 +78,7 @@ class Hero(Charater):
         self.hero_items = []
         self.enemies_killed = []
         self.armor_level = 0
+        self.evade_level = 0
         
     def attack(self, enemy):
         if type(enemy).__name__ == 'Shadow' and enemy.gets_hit() == False:
@@ -102,16 +103,29 @@ class Hero(Charater):
         if prob <= 2:
             self.power+= 2
             print("You made a critical hit!")
-           
-               
+    
+    def evade(self):
+        if self.evade_level == 2:
+            prob = random.randint(1, 10)
+            if prob == 1:
+                return True        
+        elif self.evade_level == 4:
+            prob = random.randint(1, 10)
+            if prob <= 2:
+                return True   
+        else: 
+            return False       
 class Enemy(Charater):
     def __init__(self, health, power, gold, reward):
         super(Enemy, self).__init__(health, power, gold) 
         self.reward = reward
         
-    def attack(self, hero):        
+    def attack(self, hero):
+        if not hero.evade():      
             hero.health -= (self.power - hero.armor_level)
             print(f"The {type(self).__name__} does {self.power} damage to you.") 
+        else:
+            print("The hero evades the enemy's attack!")    
     
     def add_enemy_to_list(self, name):
         enemy_list.append(name)  
