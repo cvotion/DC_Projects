@@ -73,10 +73,11 @@ class NPC(Charater):
         print(f"You now have {hero.gold} gold.")          
     
 class Hero(Charater):
-    
-    hero_items = []
-    enemies_killed = []
-    # todo figure out how to do this as a dictionary maybe??
+    def __init__(self, health, power, gold):
+        super(Hero, self).__init__(health, power, gold)
+        self.hero_items = []
+        self.enemies_killed = []
+        self.armor_level = 0
         
     def attack(self, enemy):
         if type(enemy).__name__ == 'Shadow' and enemy.gets_hit() == False:
@@ -107,11 +108,8 @@ class Enemy(Charater):
         super(Enemy, self).__init__(health, power, gold) 
         self.reward = reward
         
-    def attack(self, hero):
-        if type(Armor).__name__ in hero.hero_items:
-                hero.health -= (self.power - type(Armor).__name__.item_bonus)
-        else:        
-            hero.health -= self.power
+    def attack(self, hero):        
+            hero.health -= (self.power - hero.armor_level)
             print(f"The {type(self).__name__} does {self.power} damage to you.") 
     
     def add_enemy_to_list(self, name):

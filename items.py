@@ -14,9 +14,12 @@ class Store:
         count = 1
         for item in self.store:
             cost = item.cost
+            perk = item.perks
             item = type(item).__name__
             print(f"""\n
-                  {count}. {item} : {cost} Gold""")
+                  {count}. {item} : {cost} Gold
+                  {perk}
+                  """)
             count+=1
 
 class Item(Store):
@@ -26,11 +29,12 @@ class Item(Store):
         self.perks = perks    
 
 class Armor(Item):
-    def __init__(self, owner, cost, perks, hp, item_bonus):
+    def __init__(self, owner, cost, perks, hp, defense):
         super().__init__(owner, cost, perks)
         self.hp = hp
-        self.item_bonus = item_bonus
-        
+        self.defense = defense
+    def equip(self, hero):
+        hero.armor_level = self.defense    
 
 class Evade(Item):
     pass

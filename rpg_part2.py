@@ -5,6 +5,7 @@
 # 3. flee
 from ast import Store
 from curses import raw
+from distutils.command import check
 from random import random
 
 
@@ -92,6 +93,7 @@ def game():
                     hero.gold -= item.cost
                     hero.hero_items.append(item)
                     item.owner = hero
+                    item.equip(hero)
                     print(f"{item.cost} has been deducted from your gold. You have {hero.gold} gold remaining.")
                     print(f"**{type(item).__name__} added to your items.**")
                 else:
@@ -109,6 +111,7 @@ def game():
             winston.get_bounty(hero)
             store()
         elif raw_input == '4':
+            winston.greet_counter = 0
             home()
         else:
             print("Sorry that's not a valid input!")
@@ -132,10 +135,6 @@ def game():
                 print("Sorry that's not a valid input!")
     def fight():
         enemy = Enemy.random_enemy()
-        def check_equipment():
-            if type(Armor).__name__ in hero.hero_items:
-                return True
-        
         def fight_menu():
     # todo add inventory option during combat 
 
@@ -152,7 +151,7 @@ def game():
                 """)
         
         while enemy.alive() and hero.alive():
-            os.system('clear')
+            # os.system('clear')
             hero.print_status()
             enemy.print_status()
             fight_menu()
@@ -165,13 +164,17 @@ def game():
                 if enemy.alive:
                 # enemy attacks hero
                     enemy.attack(hero)
+                    
                 
             elif raw_input == "3":
                 print("Goodbye.")
                 enemy = random.choice(enemy_list)        
                 break
+            
+            
             else:
                 print(f"Invalid input {raw_input}")
+                
     home()            
         
         
