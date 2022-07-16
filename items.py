@@ -47,14 +47,21 @@ class SuperTonic(Item):
     def equip(self, hero):
         hero.health = 10
         print("Hero's health has been fully restored!")
+        
+class Zombie_killer(Item):
+    def equip(self, hero):
+        hero.zombie_killer = True       
 
 winstons_store = Store("Winston")
 
-armor = Armor("Winston", 15, "Defense +2", 1, 2)
+armor = Armor("Winston", 15, "Defense +2", 15, 2)
 winstons_store.store.append(armor)
 evade = Evade("Winston", 20, """Evade +2 
-              (chance of evading enemy attack increased by 2%)""", 2)
+            (chance of evading enemy attack increased by 2%)""", 2)
 winstons_store.store.append(evade)
 supertonic = SuperTonic("Winston", 30, """Fully restores hero health.
-                        Can be used during battle.""")
+                    Can be used during battle.""")
 winstons_store.store.append(supertonic)
+zombie_kill = Zombie_killer("Winston", 0, """Magic rune equiped to your sword 
+                        that will allow you to slay zombies.""")
+winstons_store.store.append(zombie_kill)

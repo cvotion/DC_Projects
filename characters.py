@@ -66,13 +66,17 @@ class NPC(Charater):
     def get_bounty(self, hero):
         total_bounty = 0
         count = 1
-        for enemy in hero.enemies_killed:
-            total_bounty += enemy.reward
-            print(f"{count}. {type(enemy).__name__} : bounty -> {enemy.reward}")
-            count += 1
-        hero.gold += total_bounty  
-        print(f"{total_bounty} gold has been added to your balance.")
-        print(f"You now have {hero.gold} gold.")          
+        if len(hero.enemies_killed) < 1:
+            print("You haven't killed any enemies yet!")
+        else:    
+            for enemy in hero.enemies_killed:
+                total_bounty += enemy.reward
+                print(f"{count}. {type(enemy).__name__} : bounty -> {enemy.reward}")
+                count += 1
+                hero.enemies_killed.remove(enemy)
+            hero.gold += total_bounty  
+            print(f"{total_bounty} gold has been added to your balance.")
+            print(f"You now have {hero.gold} gold.")          
     
 class Hero(Charater):
     def __init__(self, health, power, gold):
@@ -82,6 +86,7 @@ class Hero(Charater):
         self.armor_level = 0
         self.armor_hp = 0
         self.evade_level = 0
+        self.zombie_killer = False
         
     def hero_hearts(self):
         print(self.heart_symbol * self.health)    
@@ -90,7 +95,7 @@ class Hero(Charater):
         if type(enemy).__name__ == 'Shadow' and enemy.gets_hit() == False:
             print("You strike the Shadow but nothing happens!")
             
-        elif type(enemy).__name__ == 'Zombie':
+        elif type(enemy).__name__ == 'Zombie' and self.zombie_killer == False:
             print("You attack the Zombie but it keeps coming toward you!") 
             enemy.attack(self)       
         else:  
